@@ -1,0 +1,86 @@
+{% extends 'admin_navbar.html' %}
+{% load static %}
+{% block title %} All Members List {% endblock %}
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.2.0/css/searchPanes.bootstrap5.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/select/1.7.0/css/select.bootstrap5.min.css">
+
+{% endblock %}
+{% block body %}
+<div class="container-fluid m-4">
+    <h1 class="text-center shadow-lg m-4"><u>Members List</u></h1>   
+    <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-body ">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class = "text-center">Add Member</h2>
+                        <form method="post" action="{% url 'add_member' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            <div class= "p-1">
+                                <button type = "submit" class="btn btn-outline-info float-end m-2">Add</button>
+                                <button type  = "Reset" class="btn btn-outline-danger float-end m-2">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <a class="btn btn-warning mb-2 " data-bs-toggle="modal" href="#exampleModalToggle" role="button">Add Member</a>
+
+    <div class="table-responsive">
+        <table id="example" class="table table-striped" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Sr.No</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                    <tr class="text-center">
+                        <td>{{ forloop.counter }}.</td>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.email }}</td>
+                        <td>
+                            <a href="{% url 'delete_member' member.id %}" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to delete this member?')">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+  
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/searchpanes/2.2.0/js/dataTables.searchPanes.min.js"></script>
+<script src="https://cdn.datatables.net/searchpanes/2.2.0/js/searchPanes.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var table = $('#example').DataTable({
+            searchPanes: true
+        });
+        table.searchPanes.container().prependTo(table.table().container());
+        table.searchPanes.resizePanes();
+    });
+</script>
+{% endblock %}
